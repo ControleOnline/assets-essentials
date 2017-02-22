@@ -1,0 +1,21 @@
+{
+    "name": "controleonline/assets-essentials",
+    "description": "Controle Online - Assets Automatic Load",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "Assets",
+        "Assets Automatic"
+    ],
+    "autoload": {
+        "psr-4": {
+            "User\\": "src/assets-essentials"
+        },
+        "classmap": [
+            "Module.php"
+        ]
+    },
+    "homepage": "https://github.com/ControleOnline/user",
+    "require": {
+        "controleonline/core": "*"        
+    }    
+}
