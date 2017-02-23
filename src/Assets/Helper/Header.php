@@ -34,7 +34,7 @@ class Header {
             $controller = strtolower(end($c));
             self::$routes['module'] = strtolower($routes['module']);
             self::$routes['controller'] = substr($controller, -10) == 'controller' ? substr($controller, 0, -10) : $controller;
-            self::$routes['action'] = strtolower($routes['action']);
+            self::$routes['action'] = Format::camelCaseDecode($routes['action']);
             self::$vendorBasepath = Format::getModulePath(self::$routes['module']);
             self::$basepath = getcwd() . DIRECTORY_SEPARATOR . 'public';
             self::$jsLibsCacheFile = './data/cache/' . self::getSystemVersion() . '/js.cache.json';
@@ -131,7 +131,7 @@ class Header {
         }
     }
 
-    protected static function addRequireJsFile($src, $name) {
+    protected static function addRequireJsFile($src, $name) {        
         $public_path = DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'js';
         $vendorFile = self::$vendorBasepath . $public_path . $src;
         $file = self::$basepath . $public_path . $src;
