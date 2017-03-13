@@ -51,7 +51,7 @@ class Header {
         self::$renderer->headScript()->setAllowArbitraryAttributes(true)->appendFile(self::$renderer->basePath($src . '?v=' . self::getSystemVersion()), $type, $attrs);
     }
 
-    protected static function addCssLib($href, $media = 'screen', $conditionalStylesheet = '', $extras = array()) {
+    public static function addCssLib($href, $media = 'screen', $conditionalStylesheet = '', $extras = array()) {
         $extras['data-type'] = 'lib';
         self::$renderer->headLink()->appendStylesheet(self::$renderer->basePath($href . '?v=' . self::getSystemVersion()), $media, $conditionalStylesheet, $extras);
     }
@@ -65,10 +65,12 @@ class Header {
             'data-main' => self::$publicVendorBasepath . 'controleonline-core-js/dist/js/Core.js?v=' . self::getSystemVersion(),
             'system-version' => self::getSystemVersion()
         ));
+        self::addJsLibs('dataTables-bootstrap', 'datatables/media/js/dataTables.bootstrap.min.js');
+        self::addJsLibs('datatables.net', 'datatables/media/js/jquery.dataTables.min.js');
         self::addCssLib('/vendor/bootstrap/dist/css/bootstrap.min.css');
         self::addCssLib('/vendor/controleonline-core-js/dist/css/Core.css');
         self::addCssLib('/vendor/fontawesome/css/font-awesome.min.css');
-        self::addCssLib('/assets/css/application.css');
+        self::addCssLib('/assets/css/application.css');        
     }
 
     protected static function writeJsLibCache() {
@@ -131,7 +133,7 @@ class Header {
         }
     }
 
-    protected static function addRequireJsFile($src, $name) {        
+    protected static function addRequireJsFile($src, $name) {
         $public_path = DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'js';
         $vendorFile = self::$vendorBasepath . $public_path . $src;
         $file = self::$basepath . $public_path . $src;
