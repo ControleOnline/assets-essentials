@@ -70,7 +70,7 @@ class Header {
         self::addCssLib('/vendor/bootstrap/dist/css/bootstrap.min.css');
         self::addCssLib('/vendor/controleonline-core-js/dist/css/Core.css');
         self::addCssLib('/vendor/fontawesome/css/font-awesome.min.css');
-        self::addCssLib('/assets/css/application.css');        
+        self::addCssLib('/assets/css/application.css');
     }
 
     protected static function writeJsLibCache() {
@@ -87,22 +87,22 @@ class Header {
     protected static function addJsDependency($bower_dependencies) {
         foreach ($bower_dependencies AS $dependency) {
             $b_c = self::getBowerConfig('./public' . self::$publicVendorBasepath . $dependency);
-            if ($b_c->main) {
+            if (isset($b_c->main) && $b_c->main) {
                 $filter = array_values(array_filter(is_array($b_c->main) ? $b_c->main : array($b_c->main), function ($var) use ($b_c) {
-                                    $file = './public' . self::$publicVendorBasepath . $b_c->name . DIRECTORY_SEPARATOR . $var;
-                                    if (is_file($file) && stripos($var, '.js') !== false) {
-                                        return true;
-                                    } elseif (is_file($file . '.js') && stripos($var, '.js') !== false) {
-                                        return true;
-                                    }
-                                    return false;
-                                }))[0];
+                            $file = './public' . self::$publicVendorBasepath . $b_c->name . DIRECTORY_SEPARATOR . $var;
+                            if (is_file($file) && stripos($var, '.js') !== false) {
+                                return true;
+                            } elseif (is_file($file . '.js') && stripos($var, '.js') !== false) {
+                                return true;
+                            }
+                            return false;
+                        }));
             }
             if ($filter) {
-                self::$requireJsDependencies[$b_c->name] = $b_c->name . DIRECTORY_SEPARATOR . $filter;
+                self::$requireJsDependencies[$b_c->name] = $b_c->name . DIRECTORY_SEPARATOR . $filter[0];
             }
 
-            $bd = array_keys((array) $b_c->dependencies);
+            $bd = array_keys(isset($b_c->dependencies) ? (array) $b_c->dependencies : array());
             self::addJsDependency($bd);
         }
     }
@@ -113,7 +113,6 @@ class Header {
 
     public static function addJsLibs($key, $src) {
         self::$requireJsDependencies[$key] = $src;
-        return $this;
     }
 
     protected static function addDefaultHeaderFiles() {
