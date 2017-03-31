@@ -1,29 +1,21 @@
 {
-    "name": "controleonline/rest-essentials",
-    "description": "REST Essentials",
+    "name": "controleonline/assets-essentials",
+    "description": "Controle Online - Assets Automatic Load",
     "license": "BSD-3-Clause",
-    "homepage": "http://controleonline.com/",
-    "type": "library",
     "keywords": [
-        "api",
-        "webserver",
-        "rest",
-        "restfull"
+        "Assets",
+        "Assets Automatic"
     ],
     "autoload": {
         "psr-4": {
-            "RESTEssentials\\": "src/RESTEssentials"
+            "User\\": "src/assets-essentials"
         },
         "classmap": [
             "Module.php"
         ]
     },
-    "config": {
-        "preferred-install": "dist",
-        "component-dir": "public/components"
-    },
-    "require": {                
-        "controleonline/core": "*",
-        "controleonline/user": "*"
-    }
+    "homepage": "https://github.com/ControleOnline/user",
+    "require": {
+        "controleonline/core": "*"        
+    }    
 }

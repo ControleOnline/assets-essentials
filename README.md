@@ -1,147 +1,56 @@
-[![Build Status](https://travis-ci.org/ControleOnline/user.svg)](https://travis-ci.org/ControleOnline/user)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ControleOnline/user/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ControleOnline/user/)
-[![Code Coverage](https://scrutinizer-ci.com/g/ControleOnline/user/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ControleOnline/user/)
-[![Build Status](https://scrutinizer-ci.com/g/ControleOnline/user/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ControleOnline/user/)
+[![Build Status](https://travis-ci.org/ControleOnline/assets-essentials.svg)](https://travis-ci.org/ControleOnline/assets-essentials)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ControleOnline/assets-essentials/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ControleOnline/assets-essentials/)
+[![Code Coverage](https://scrutinizer-ci.com/g/ControleOnline/assets-essentials/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ControleOnline/assets-essentials/)
+[![Build Status](https://scrutinizer-ci.com/g/ControleOnline/assets-essentials/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ControleOnline/assets-essentials/)
 
-# User management and login #
+More on [Controle Online](http://controleonline.com "Controle Online").
 
-
-## Features ##
-* User create account
-* User login
-* Store user session on database (Common on balanced servers)
-
-## Installation ##
-### Composer ###
-Add these lines to your composer.json:
-
+### AUTOMATIC ADD JS/CSS FILES ###
+To add your js / css files simply place them following this structure:
 ```
-    "require": {
-        "controleonline/user": "*"        
-    }
+public/assets/js/application.js
+<module>/assets/js/modules/<module>.js
+<module>/assets/js/modules/<module>/<controller>.js
+<module>/assets/js/modules/<module>/<controller>/<action>.js
+
+public/assets/css/application.css
+<module>/assets/css/modules/<module>.css
+<module>/assets/css/modules/<module>/<controller>.css
+<module>/assets/css/modules/<module>/<controller>/<action>.css
 ```
-
-
-## Settings ##
-
-### Configure DB ###
-In your config/autoload/database.local.php confiruration add the following:
-
+If these files exist, they will be added in head:
 ```
-<?php
-$db = array(
-    'host' => 'localhost',
-    'port' => '3306',
-    'user' => 'user',
-    'password' => 'pass',
-    'dbname' => 'db',
-    'driver' => 'pdo_mysql',
-    'init_command' => 'SET NAMES utf8',
-    'port' => '3306'
-);
-return array(
-    'db' => array( //Use on zend session to store session on database (common on balanced web servers)
-        'driver' => $db['driver'],
-        'dsn' => 'mysql:dbname=' . $db['dbname'] . ';host=' . $db['host'],
-        'username' => $db['user'],
-        'password' => $db['password'],
-        'driver_options' => array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => $db['init_command'],
-            'buffer_results' => true
-        ),
-    ),
-    'doctrine' => array(
-        'connection' => array(
-            'orm_default' => array(
-                'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
-                'params' => array(
-                    'host' => $db['host'],
-                    'port' => $db['port'],
-                    'user' => $db['user'],
-                    'password' => $db['password'],
-                    'dbname' => $db['dbname'],
-                    'driver' => $db['driver'],
-                    'charset' => 'utf8', //Very important
-                    'driverOptions' => array(
-                        1002 => $db['init_command'] //Very important
-                    )
-                )
-            )
-        )
-    )
-);
-```
-### Configure Session ###
-In your config/autoload/session.global.php confiruration add the following:
+<script type="text/javascript" src="/assets/js/application.js"></script>
+<script type="text/javascript" src="/js/modules/<module>.js"></script>
+<script type="text/javascript" src="/js/modules/<module>/<controller>.js"></script>
+<script type="text/javascript" src="/js/modules/<module>/<controller>/<action>.js"></script>
 
-```
-<?php
-return array(
-    'session' => array(
-        'sessionConfig' => array(
-            'cache_expire' => 86400,
-            'cookie_domain' => 'localhost',
-            'name' => 'localhost',
-            'cookie_lifetime' => 1800,
-            'gc_maxlifetime' => 1800,
-            'cookie_path' => '/',
-            'cookie_secure' => TRUE,
-            'remember_me_seconds' => 3600,
-            'use_cookies' => true,
-        ),
-        'serviceConfig' => array(
-            'base64Encode' => false
-        )
-    )
-);
+<link href="/assets/css/application.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/modules/<module.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/modules/<module/<controller>.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/modules/<module/<controller>/<action>.css" media="screen" rel="stylesheet" type="text/css">
 ```
 
-### Zend 2 ###
-In your config/application.config.php confiruration add the following:
+We also add the libraries that are in bower.json and its dependencies automatically.
+
+If you need to add a library manually (this happens when the library's bower.json is not well configured or if there is more than one js file in each dependency), just add it manually:
 
 ```
-<?php
-$modules = array(
-    'User' 
-);
-return array(
-    'modules' => $modules,
-    'module_listener_options' => array(
-        'module_paths' => array(
-            './module',
-            './vendor',
-        ),
-        'config_glob_paths' => array(
-            'config/autoload/{,*.}{global,local}.php',
-        ),
-    ),
-);
-```
-## Usage ##
-
-### Create Account ###
-```
-http://localhost/user/create-account
+Assets\Helper\Header::addJsLibs('lazyLoad', 'controleonline-core-js/dist/js/LazyLoad.js');
 ```
 
-### Login ###
+Do not forget to keep in the layout file the call to the headers:
 ```
-http://localhost/user/login
-```
-### Logout ###
-```
-http://localhost/user/logout
-```
-### Forgot Password ###
-```
-http://localhost/user/forgot-password
-```
-### Forgot Username ###
-```
-http://localhost/user/forgot-username
-```
-
-### Change User ###
-```
-http://localhost/user/change-user
+<html lang="en">
+    <head>
+        <?= $this->headLink() ?>
+        <?= $this->headStyle() ?>
+        <?= $this->headScript() ?>
+    </head>    
+    <body data-js-libs='<?= $this->requireJsLibs ? json_encode($this->requireJsLibs) : '{}' ?>' data-js-files='<?= $this->requireJsFiles ? json_encode($this->requireJsFiles) : '{}' ?>'>
+        <div class="show-messages">
+            <!-- This div (class .show-messages) receives all system alerts  -->
+        </div>
+    </body>
+</html>   
 ```
