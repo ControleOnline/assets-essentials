@@ -38,7 +38,7 @@ class Header {
             self::$vendorBasepath = Format::getModulePath(self::$routes['module']);
             self::$basepath = getcwd() . DIRECTORY_SEPARATOR . 'public';
             self::$jsLibsCacheFile = './data/cache/' . self::getSystemVersion() . '/js.cache.json';
-            is_dir(dirname(self::$jsLibsCacheFile)) ?: mkdir(dirname(self::$jsLibsCacheFile), 0777, true);
+            is_dir(dirname(self::$jsLibsCacheFile)) ?: @mkdir(dirname(self::$jsLibsCacheFile), 0777, true);
         }
     }
 
