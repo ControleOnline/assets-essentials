@@ -12,6 +12,7 @@ class DefaultController extends AbstractController {
         $module = $this->getModuleFromUrl($url);
         $module_path = Format::getModulePath($module);
         if (is_file($module_path . $url)) {
+            header("Content-Type: application/javascript");
             echo file_get_contents($module_path . $url);
         }
         exit;
