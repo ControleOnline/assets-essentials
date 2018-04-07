@@ -21,6 +21,7 @@ class Header {
     protected static $jsLibsCacheFile;
     protected static $default_route;
     protected static $uri;
+    protected static $public_path = DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
 
     public static function init(\Zend\View\Renderer\RendererInterface $renderer, $default_route, $uri) {
         if (!self::$basepath) {
@@ -38,7 +39,7 @@ class Header {
             self::$vendorBasepath = Format::getModulePath(self::$routes['module']);
             self::$basepath = getcwd() . DIRECTORY_SEPARATOR . 'public';
             self::$jsLibsCacheFile = './data/cache/' . self::getSystemVersion() . '/js.cache.json';
-            is_dir(dirname(self::$jsLibsCacheFile)) ?: @mkdir(dirname(self::$jsLibsCacheFile), 0777, true);
+            is_dir(dirname(self::$jsLibsCacheFile)) ? : @mkdir(dirname(self::$jsLibsCacheFile), 0777, true);
         }
     }
 
@@ -62,15 +63,15 @@ class Header {
 
     protected static function addDefaultLibs() {
         self::addJsLib(self::$publicVendorBasepath . 'requirejs/require.js', 'text/javascript', array(
-            'data-main' => self::$publicVendorBasepath . 'controleonline-core-js/dist/js/Core.js?v=' . self::getSystemVersion(),
+            'data-main' => '/assets/js/Core.js?v=' . self::getSystemVersion(),
             'system-version' => self::getSystemVersion()
         ));
         self::addJsLibs('dataTables-bootstrap', 'datatables/media/js/dataTables.bootstrap.min.js');
         self::addJsLibs('datatables.net', 'datatables/media/js/jquery.dataTables.min.js');
         self::addCssLib('/vendor/bootstrap/dist/css/bootstrap.min.css');
-        self::addCssLib('/vendor/controleonline-core-js/dist/css/Core.css');
+        self::addCssLib('/assets/css/Core.css');
         self::addCssLib('/vendor/fontawesome/css/font-awesome.min.css');
-        self::addCssLib('/assets/css/application.css');
+        self::addCssLib('/assets/css/core/Application.css');
     }
 
     protected static function writeJsLibCache() {
@@ -92,7 +93,7 @@ class Header {
                             $file = './public' . self::$publicVendorBasepath . $b_c->name . DIRECTORY_SEPARATOR . $var;
                             if (is_file($file) && stripos($var, '.js') !== false) {
                                 return true;
-                            } elseif (is_file($file . '.js') && stripos($var, '.js') !== false) {
+                            } elseif (is_file($file . '.js') && stripos($var, '.js') === false) {
                                 return true;
                             }
                             return false;
@@ -116,7 +117,7 @@ class Header {
     }
 
     protected static function addDefaultHeaderFiles() {
-        self::addRequireJsFile(DIRECTORY_SEPARATOR . 'application', 'application');
+        self::addRequireJsFile(DIRECTORY_SEPARATOR . 'core/application', 'application');
         self::addRequireJsFile(DIRECTORY_SEPARATOR . self::$routes['module'], self::$routes['module']);
         self::addRequireJsFile(DIRECTORY_SEPARATOR . self::$routes['module'] . DIRECTORY_SEPARATOR . self::$routes['controller'], self::$routes['module'] . '-' . self::$routes['controller']);
         self::addRequireJsFile(DIRECTORY_SEPARATOR . self::$routes['module'] . DIRECTORY_SEPARATOR . self::$routes['controller'] . DIRECTORY_SEPARATOR . self::$routes['action'], self::$routes['module'] . '-' . self::$routes['controller'] . '-' . self::$routes['action']);
@@ -132,12 +133,17 @@ class Header {
         }
     }
 
+    public static function addArbitraryRequireJsFile($src, $name) {
+        self::$requireJsFiles[$name] = self::$public_path . 'js' . $src;
+    }
+
     protected static function addRequireJsFile($src, $name) {
-        $public_path = DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'js';
-        $vendorFile = self::$vendorBasepath . $public_path . $src;
-        $file = self::$basepath . $public_path . $src;
-        if (is_file($vendorFile . '.js') || (is_file($file . '.js'))) {
-            self::$requireJsFiles[$name] = $public_path . $src;
+
+        $vendorFile = self::$vendorBasepath . self::$public_path . 'js' . $src;
+        $file = self::$basepath . self::$public_path . 'js' . $src;
+                
+        if (is_file($vendorFile . '.js') || (is_file($file . '.js'))) {            
+            self::$requireJsFiles[$name] = self::$public_path . 'js' . $src;
         }
     }
 
@@ -154,11 +160,10 @@ class Header {
     }
 
     protected static function addCssFile($href) {
-        $public_path = DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'css';
-        $vendorFile = self::$vendorBasepath . $public_path . $href;
-        $file = self::$basepath . $public_path . $href;
+        $vendorFile = self::$vendorBasepath . self::$public_path . 'css' . $href;
+        $file = self::$basepath . self::$public_path . 'css' . $href;
         if (is_file($vendorFile) || (is_file($file))) {
-            self::addCss($public_path . $href);
+            self::addCss(self::$public_path . 'css' . $href);
         }
     }
 
